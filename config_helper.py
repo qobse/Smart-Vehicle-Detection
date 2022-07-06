@@ -15,10 +15,26 @@ class ReadConfigFile:
         except Exception as error:
             logger.error(f"[CFG] Failed to load config file [path={path} error={error}]")
 
+        # yapf: disable
         @dataclass
         class config:
-            camera_url: str
+            camera_url:         str
+            lpd_weights:        str
+            lpd_network:        str
+            lpd_classes:        str
+            lpd_confidence:     float
+            lpd_nms_threshold:  float
+            lpd_width:          int
+            lpd_height:         int
 
-        config.camera_url = data["camera_url"]
+        config.camera_url           = data["camera_url"]
+        config.lpd_weights          = data["lpd_weights"]
+        config.lpd_network          = data["lpd_network"]
+        config.lpd_classes          = data["lpd_classes"]
+        config.lpd_confidence       = data["lpd_confidence"]
+        config.lpd_nms_threshold    = data["lpd_nms_threshold"]
+        config.lpd_width            = data["lpd_width"]
+        config.lpd_height           = data["lpd_height"]
 
         return config
+        # yapf: enable
