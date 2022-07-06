@@ -1,4 +1,4 @@
-from threading import Thread
+from threading import Lock, Thread
 import time
 import cv2
 
@@ -6,42 +6,47 @@ import cv2
 class RTSPframeGrabber(object):
 
     def __init__(self, src=0):
-        # Create a VideoCapture object
-        self.capture = cv2.VideoCapture(src)
+        self.stream = cv2.VideoCapture(src)
 
         # Take screenshot every x seconds
         self.screenshot_interval = 1
 
         # Default resolutions of the frame are obtained (system dependent)
-        self.frame_width = int(self.capture.get(3))
-        self.frame_height = int(self.capture.get(4))
+        self.frame_width = int(self.stream.get(3))
+        self.frame_height = int(self.stream.get(4))
 
+        (self.grabbed, self.frame) = self.stream.read()
+        self.started = False
+        self.read_lock = Lock()
+
+    def start(self):
+        if self.started:
+            return None
+        self.started = True
         # Start the thread to read frames from the video stream
         self.thread = Thread(target=self.update, args=())
         self.thread.daemon = True
         self.thread.start()
+        return self
 
     def update(self):
         # Read the next frame from the stream in a different thread
-        while True:
-            if self.capture.isOpened():
-                (self.status, self.frame) = self.capture.read()
-            time.sleep(0.01)
+        while self.started:
+            (grabbed, frame) = self.stream.read()
+            self.read_lock.acquire()
+            self.grabbed = grabbed
+            self.frame = frame
+            self.read_lock.release()
 
     def latest_frame(self):
-        return self.frame
+        self.read_lock.acquire()
+        frame = self.frame.copy()
+        self.read_lock.release()
+        return frame
 
-    def show_frame(self):
-        # Display frames in main program
-        if self.status:
-            cv2.imshow("frame", self.frame)
-
-        # Press Q on keyboard to stop recording
-        key = cv2.waitKey(1)
-        if key == ord("q"):
-            self.capture.release()
-            cv2.destroyAllWindows()
-            exit(1)
+    def stop(self):
+        self.started = False
+        self.thread.join()
 
     def save_frame(self):
         # Save obtained frame periodically
@@ -58,3 +63,6 @@ class RTSPframeGrabber(object):
                     pass
 
         Thread(target=save_frame_thread, args=()).start()
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.stream.release()
