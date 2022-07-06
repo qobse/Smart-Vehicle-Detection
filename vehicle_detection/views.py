@@ -10,7 +10,7 @@ from vehicle_detection.frame_grabber import *
 from loguru import logger
 
 config = ReadConfigFile().read_config("config.json")
-frame_grabber = RTSPframeGrabber(config.camera_url)
+frame_grabber = RTSPframeGrabber().start()
 
 
 def cam(camera):
