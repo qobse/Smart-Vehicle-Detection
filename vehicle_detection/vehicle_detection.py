@@ -13,10 +13,6 @@ import numpy as np
 import cv2
 import os
 
-lbl = [
-    "MyLP", "PhLP", "person", "bicycle", "car", "motorcycle", "bus", "truck"
-]
-
 
 def signal_handler(signal, frame):
     logger.info(f"[SIG] Caught signal {signal}")
@@ -83,41 +79,30 @@ while is_running:
     # ensure at least one detection exists
     if len(idxs) > 0:
         for i in idxs.flatten():
-            if classIDs[i] <= 9:
-                (x_min, y_min) = (boxes[i][0], boxes[i][1])
-                (width, height) = (boxes[i][2], boxes[i][3])
-                lp = org_img[y_min:y_min + height, x_min:x_min + width]
-                cv2.imwrite(
-                    os.path.join(
-                        "/home/yaqoob/work/others/svd/vehicle_detection/lp",
-                        str(i) + ".jpg",
-                    ),
-                    lp,
-                )
-                # draw a bounding box rectangle and label on the image
-                color = [int(c) for c in COLORS[classIDs[i]]]
-                cv2.rectangle(
-                    org_img,
-                    (x_min, y_min),
-                    (x_min + width, y_min + height),
-                    color,
-                    2,
-                )
-                text = "{}: {:.4f}".format(labels[classIDs[i]], confidences[i])
-                cv2.putText(
-                    org_img,
-                    text,
-                    (x_min, y_min - 5),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.5,
-                    color,
-                    2,
-                )
-                cv2.imwrite(
-                    os.path.join(
-                        "/home/yaqoob/work/others/svd/vehicle_detection/output",
-                        str(i) + ".jpg",
-                    ),
-                    frame,
-                )
+            # draw a bounding box rectangle and label on the image
+            color = [int(c) for c in COLORS[classIDs[i]]]
+            cv2.rectangle(
+                org_img,
+                (x_min, y_min),
+                (x_min + width, y_min + height),
+                color,
+                2,
+            )
+            text = "{}: {:.4f}".format(labels[classIDs[i]], confidences[i])
+            cv2.putText(
+                org_img,
+                text,
+                (x_min, y_min - 5),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                color,
+                2,
+            )
+            cv2.imwrite(
+                os.path.join(
+                    "/home/rnd/YQ/projects/other/SVD/vehicle_detection/output",
+                    str(i) + ".jpg",
+                ),
+                frame,
+            )
 ######################## Preprocessing ###########################
