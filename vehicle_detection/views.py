@@ -33,7 +33,7 @@ def video_feed():
         boxes, confs, class_ids = yolo.predict_lpd(img)
 
         img_labeled = yolo.draw_boxes(img, boxes, confs, class_ids,
-                                      yolo.get_labels(config.lpd_classes))
+                                      yolo.get_labels())
         flag, img_enc = cv2.imencode(".jpg", img_labeled)
 
         if not flag:
