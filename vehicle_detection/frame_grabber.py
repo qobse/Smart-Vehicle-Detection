@@ -25,7 +25,7 @@ class RTSPframeGrabber(object):
         self.started = True
         # Start the thread to read frames from the video stream
         self.thread = Thread(target=self.update, args=())
-        self.thread.daemon = True
+        # self.thread.daemon = True
         self.thread.start()
         return self
 
