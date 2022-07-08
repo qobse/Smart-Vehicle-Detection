@@ -14,6 +14,7 @@ class RTSPframeGrabber(object):
         # Default resolutions of the frame are obtained (system dependent)
         self.frame_width = int(self.stream.get(3))
         self.frame_height = int(self.stream.get(4))
+        self.fps = int(self.stream.get(cv2.CAP_PROP_FPS))
 
         (self.grabbed, self.frame) = self.stream.read()
         self.started = False
