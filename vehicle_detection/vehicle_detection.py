@@ -15,7 +15,6 @@ import cv2
 import os
 from pathlib import Path
 
-
 sys.path.insert(0, "../")
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -46,7 +45,7 @@ class YoloLpd():
     def get_output_layers(self, net):
         return net.getLayerNames()
 
-    def get_labels(self, label_path):
+    def get_labels(self):
         labels = open(self.config.lpd_classes).read().strip().split("\n")
         return labels
 
@@ -159,4 +158,6 @@ class YoloLpd():
             post_proc_time = (time.time() - t2)
             logger.info(f"[INFO] YOLO Inference time: {inf_time}s")
             logger.info(f"[INFO] YOLO PostProcessing time: {post_proc_time}s")
+
+            boxes, confs, class_ids = self.nms(boxes, confs, class_ids)
             return boxes, confs, class_ids
