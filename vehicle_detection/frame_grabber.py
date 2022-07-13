@@ -1,6 +1,7 @@
 from threading import Lock, Thread
 import time
 import cv2
+from loguru import logger
 
 
 class RTSPframeGrabber(object):
@@ -21,14 +22,18 @@ class RTSPframeGrabber(object):
         self.read_lock = Lock()
 
     def start(self):
-        if self.started:
-            return None
-        self.started = True
-        # Start the thread to read frames from the video stream
-        self.thread = Thread(target=self.update, args=())
-        # self.thread.daemon = True
-        self.thread.start()
-        return self
+        try:
+            if self.started:
+                return None
+            self.started = True
+            # Start the thread to read frames from the video stream
+            self.thread = Thread(target=self.update, args=())
+            # self.thread.daemon = True
+            self.thread.start()
+            logger.info(f"[CAM] Frame grabber initialization completed")
+            return self
+        except Exception as error:
+            logger.error(f"[CAM] Frame grabber initialization failed [error={error}]")
 
     def update(self):
         # Read the next frame from the stream in a different thread
