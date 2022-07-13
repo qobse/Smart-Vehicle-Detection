@@ -7,12 +7,11 @@ from django.http import StreamingHttpResponse
 from config_helper import ReadConfigFile
 from vehicle_detection.frame_grabber import *
 from vehicle_detection.vehicle_detection import *
-# from vehicle_detection.vehicle_counter import *
 
 from loguru import logger
 
 config = ReadConfigFile().read_config("config.json")
-frame_grabber = RTSPframeGrabber(config.camera_url).start()
+frame_grabber = RTSPframeGrabber(config.camera_url)
 yolo = YoloLpd()
 counter = VehicleCounter()
 
@@ -20,17 +19,19 @@ counter = VehicleCounter()
 def cam(camera):
     while True:
         try:
+            frame_grabber.start()
             frame = camera.latest_frame()
             _, jpeg = cv2.imencode(".jpg", frame)
             byte_img = jpeg.tobytes()
             yield (b"--frame\r\n"
                    b"Content-Type: image/jpeg\r\n\r\n" + byte_img + b"\r\n\r\n")
-        except AttributeError:
-            logger.info("[INFO] Frame grabber failed")
+        except Exception as error:
+            logger.error(f"[CAM] Frame not received [error={error}]")
 
 
 def video_feed():
     while True:
+        frame_grabber.start()
         img = frame_grabber.latest_frame()
         boxes, confs, class_ids = yolo.predict_lpd(img)
 
@@ -46,9 +47,6 @@ def video_feed():
 
 
 def vehicle_counter():
-    # video_width = frame_grabber.frame_width
-    # video_height = frame_grabber.frame_height
-    # fps = frame_grabber.fps
 
     previous_frame_detections = [{
         (0, 0): 0
@@ -60,6 +58,7 @@ def vehicle_counter():
         boxes, confidences, classIDs = [], [], []
         vehicle_crossed_line_flag = config.counter_bbox
 
+        frame_grabber.start()
         img = frame_grabber.latest_frame()
         if not frame_grabber.grabbed:
             break
