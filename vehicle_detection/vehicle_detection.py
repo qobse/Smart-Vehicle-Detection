@@ -101,6 +101,11 @@ class YoloLpd():
             cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
         return img
 
+    def draw_ROI(self, img):
+        colors = (100, 50, 200)
+        cv2.polylines(img, [np.array([(2550, 450), (2200, 0), (0, 1400), (2000, 1400)], np.int32)], True, (15,220,10), 6)
+        return img
+
     def crop_img(self, img, box):
         #bbox[x_min, y_min, width, height]
         x, y, w, h = box
@@ -157,8 +162,8 @@ class YoloLpd():
                     class_ids.append(class_id)
 
             post_proc_time = (time.time() - t2)
-            logger.info(f"[INFO] YOLO Inference time: {inf_time}s")
-            logger.info(f"[INFO] YOLO PostProcessing time: {post_proc_time}s")
+            # logger.info(f"[INFO] YOLO Inference time: {inf_time}s")
+            # logger.info(f"[INFO] YOLO PostProcessing time: {post_proc_time}s")
 
             boxes, confs, class_ids = self.nms(boxes, confs, class_ids)
             return boxes, confs, class_ids
