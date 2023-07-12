@@ -6,7 +6,6 @@ from django import conf
 sys.path.insert(0, "./")
 sys.path.insert(0, "../")
 from config_helper import ReadConfigFile
-from vehicle_detection.frame_grabber import *
 from vehicle_detection.image_helper import *
 from loguru import logger
 from scipy import spatial
@@ -39,7 +38,7 @@ class YoloLpd():
 
         lpd_net.setInput(dummy_blob)
         lpd_net.forward()
-        logger.info("[LPD] YOLO DNN model initialization completed ...")
+        logger.info("[LPD] YOLO DNN model initialization completed")
 
         return lpd_net
 
