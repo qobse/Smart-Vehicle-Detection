@@ -1,6 +1,7 @@
-from dataclasses import dataclass
-from loguru import logger
 import json
+from dataclasses import dataclass
+
+from loguru import logger
 
 
 class ReadConfigFile:
@@ -12,7 +13,9 @@ class ReadConfigFile:
             with open(path, "r") as jsonfile:
                 data = json.load(jsonfile)
         except Exception as error:
-            logger.error(f"[CFG] Failed to load config file [path={path} error={error}]")
+            logger.error(
+                f"[CFG] Failed to load config file [path={path} error={error}]"
+            )
 
         # fmt: off
         @dataclass

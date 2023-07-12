@@ -1,4 +1,5 @@
 import time
+
 import cv2
 import numpy as np
 
@@ -10,8 +11,9 @@ def image_getChannel(img):
     elif len(shape) == 3:
         return shape[2]
     else:
-        assert "Error Reading Image Channel from shape (%d)" % (",".join(
-            map(str, shape)))
+        assert "Error Reading Image Channel from shape (%d)" % (
+            ",".join(map(str, shape))
+        )
 
 
 def readImage(imgPath, gray=False):
@@ -26,17 +28,12 @@ def readImage(imgPath, gray=False):
     return img
 
 
-def readImage_OriResize(imgPath,
-                        targetSize,
-                        gray=False,
-                        resizeMode=cv2.INTER_LINEAR):
+def readImage_OriResize(imgPath, targetSize, gray=False, resizeMode=cv2.INTER_LINEAR):
     """
     return oriSize_img, resizedImg
     """
     original_image = readImage(imgPath, gray)
-    resized_image = cv2.resize(original_image,
-                               targetSize,
-                               interpolation=resizeMode)
+    resized_image = cv2.resize(original_image, targetSize, interpolation=resizeMode)
     return original_image, resized_image
 
 

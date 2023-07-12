@@ -1,11 +1,12 @@
-from threading import Lock, Thread
 import time
+from threading import Lock
+from threading import Thread
+
 import cv2
 from loguru import logger
 
 
 class RTSPframeGrabber(object):
-
     def __init__(self, src=0):
         self.stream = cv2.VideoCapture(src)
 
@@ -61,8 +62,7 @@ class RTSPframeGrabber(object):
         def save_frame_thread():
             while True:
                 try:
-                    cv2.imwrite("frame_{}.png".format(self.frame_count),
-                                self.frame)
+                    cv2.imwrite("frame_{}.png".format(self.frame_count), self.frame)
                     self.frame_count += 1
                     time.sleep(self.screenshot_interval)
                 except AttributeError:
