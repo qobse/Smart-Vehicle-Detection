@@ -4,7 +4,6 @@ import json
 
 
 class ReadConfigFile:
-
     def __init__(self) -> None:
         pass
 
@@ -15,7 +14,7 @@ class ReadConfigFile:
         except Exception as error:
             logger.error(f"[CFG] Failed to load config file [path={path} error={error}]")
 
-        # yapf: disable
+        # fmt: off
         @dataclass
         class config:
             camera_url:                 str
@@ -41,4 +40,4 @@ class ReadConfigFile:
         config.counter_video_save_path  = data["counter_video_save_path"]
 
         return config
-        # yapf: enable
+        # fmt: off
