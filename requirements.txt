@@ -2,4 +2,5 @@ Django==3.2.13
 numpy==1.19.5
 dataclasses==0.6
 loguru==0.6.0
-opencv-python-inference-engine==2021.11.27
+scipy
+opencv-python-inference-engine
